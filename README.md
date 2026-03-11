@@ -1,10 +1,8 @@
 # BESS Energy Arbitrage: ERCOT Hub & Node Analysis
 
-> **Modo Energy Open Tech Challenge Submission**
+> **Modo Energy Open Tech Challenge Submission** · Divy Patel · March 2026
 >
-> **Divy Patel** · MSc Financial Engineering, Stevens Institute of Technology · BTech Computer Science, Gujarat Technological University
->
-> **[Live Demo →](https://dashboard-lac-kappa-22.vercel.app)** · March 2026
+> **[Live Demo →](https://dashboard-lac-kappa-22.vercel.app)**
 
 ## Point of View
 
