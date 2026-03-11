@@ -31,6 +31,10 @@ docs/extra/*
 docs/plan/*
 !docs/plan/README.md
 
+# Node / Next.js
+node_modules/
+.next/
+
 # IDE
 .vscode/
 .idea/

@@ -1,0 +1,202 @@
+{
+  "HOUSTON": [
+    {
+      "month": "Jan",
+      "revenue_k": 686.7
+    },
+    {
+      "month": "Feb",
+      "revenue_k": 387.1
+    },
+    {
+      "month": "Mar",
+      "revenue_k": 567.2
+    },
+    {
+      "month": "Apr",
+      "revenue_k": 977.1
+    },
+    {
+      "month": "May",
+      "revenue_k": 1321.9
+    },
+    {
+      "month": "Jun",
+      "revenue_k": 487.4
+    },
+    {
+      "month": "Jul",
+      "revenue_k": 285.9
+    },
+    {
+      "month": "Aug",
+      "revenue_k": 1035.5
+    },
+    {
+      "month": "Sep",
+      "revenue_k": 280.9
+    },
+    {
+      "month": "Oct",
+      "revenue_k": 413.1
+    },
+    {
+      "month": "Nov",
+      "revenue_k": 779.7
+    },
+    {
+      "month": "Dec",
+      "revenue_k": 338.2
+    }
+  ],
+  "NORTH": [
+    {
+      "month": "Jan",
+      "revenue_k": 775.4
+    },
+    {
+      "month": "Feb",
+      "revenue_k": 392.6
+    },
+    {
+      "month": "Mar",
+      "revenue_k": 530.7
+    },
+    {
+      "month": "Apr",
+      "revenue_k": 970.1
+    },
+    {
+      "month": "May",
+      "revenue_k": 1200.0
+    },
+    {
+      "month": "Jun",
+      "revenue_k": 444.9
+    },
+    {
+      "month": "Jul",
+      "revenue_k": 324.8
+    },
+    {
+      "month": "Aug",
+      "revenue_k": 1045.2
+    },
+    {
+      "month": "Sep",
+      "revenue_k": 357.3
+    },
+    {
+      "month": "Oct",
+      "revenue_k": 552.4
+    },
+    {
+      "month": "Nov",
+      "revenue_k": 893.3
+    },
+    {
+      "month": "Dec",
+      "revenue_k": 398.3
+    }
+  ],
+  "SOUTH": [
+    {
+      "month": "Jan",
+      "revenue_k": 739.6
+    },
+    {
+      "month": "Feb",
+      "revenue_k": 378.3
+    },
+    {
+      "month": "Mar",
+      "revenue_k": 646.8
+    },
+    {
+      "month": "Apr",
+      "revenue_k": 972.7
+    },
+    {
+      "month": "May",
+      "revenue_k": 1331.8
+    },
+    {
+      "month": "Jun",
+      "revenue_k": 487.1
+    },
+    {
+      "month": "Jul",
+      "revenue_k": 327.1
+    },
+    {
+      "month": "Aug",
+      "revenue_k": 1064.8
+    },
+    {
+      "month": "Sep",
+      "revenue_k": 315.5
+    },
+    {
+      "month": "Oct",
+      "revenue_k": 505.4
+    },
+    {
+      "month": "Nov",
+      "revenue_k": 815.2
+    },
+    {
+      "month": "Dec",
+      "revenue_k": 333.6
+    }
+  ],
+  "WEST": [
+    {
+      "month": "Jan",
+      "revenue_k": 896.8
+    },
+    {
+      "month": "Feb",
+      "revenue_k": 480.9
+    },
+    {
+      "month": "Mar",
+      "revenue_k": 839.3
+    },
+    {
+      "month": "Apr",
+      "revenue_k": 1108.9
+    },
+    {
+      "month": "May",
+      "revenue_k": 1297.1
+    },
+    {
+      "month": "Jun",
+      "revenue_k": 501.4
+    },
+    {
+      "month": "Jul",
+      "revenue_k": 361.4
+    },
+    {
+      "month": "Aug",
+      "revenue_k": 1117.3
+    },
+    {
+      "month": "Sep",
+      "revenue_k": 510.4
+    },
+    {
+      "month": "Oct",
+      "revenue_k": 792.4
+    },
+    {
+      "month": "Nov",
+      "revenue_k": 1040.8
+    },
+    {
+      "month": "Dec",
+      "revenue_k": 494.2
+    }
+  ]
+}
