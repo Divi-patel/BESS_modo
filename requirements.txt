@@ -1,0 +1,40 @@
+# BESS Dispatch MVP — Gen 1
+# Create env: python -m venv .venv && source .venv/bin/activate
+# Install: pip install -r requirements.txt
+
+# --- Data & tables ---
+numpy>=1.24
+pandas>=2.0
+pyarrow>=14.0
+duckdb>=0.10
+
+# --- Optimization (LP dispatch) ---
+cvxpy>=1.4
+scipy>=1.12
+
+# --- Cloud data access (GCS bucket) ---
+gcsfs>=2024.2
+google-cloud-storage>=2.14
+
+# --- Market data fallback ---
+gridstatus>=0.26
+
+# --- Notebooks ---
+jupyter>=1.0
+jupyterlab>=4.0
+ipykernel>=6.29
+
+# --- Plotting & viz ---
+matplotlib>=3.7
+seaborn>=0.13
+plotly>=5.18
+
+# --- Config ---
+pyyaml>=6.0
+
+# --- APIs ---
+requests>=2.31
+
+# --- Dev tools ---
+pytest>=8.0
+ruff>=0.3

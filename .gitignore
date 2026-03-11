@@ -1,0 +1,30 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Large data (re-downloadable from GCS)
+data/raw/
+data/prices/
+data/revenue/
+data/generation/
+data/asset_registry.duckdb
+
+# IDE
+.vscode/
+.idea/
+
+# Env files
+.env
