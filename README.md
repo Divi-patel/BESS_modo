@@ -135,7 +135,7 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 
 ## Interactive Dashboard
 
-> ### **[Live Demo → dbessmodo.vercel.app](https://dbessmodo.vercel.app)**
+> ### **[Live Demo → dashboard-lac-kappa-22.vercel.app](https://dashboard-lac-kappa-22.vercel.app)**
 >
 > 6 pages · 9 locations · 7,630 scenarios · Configurable BESS parameters · Dark/light theme
 
