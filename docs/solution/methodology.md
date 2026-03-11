@@ -3,7 +3,7 @@
 ## 1. Problem Formulation
 
 ### Motivation
-Energy arbitrage — buying electricity when cheap, selling when expensive — is the primary revenue stream for standalone BESS in ERCOT. The theoretical maximum revenue under **perfect price foresight** establishes an upper bound that real operators approach but never reach. Comparing this bound to actual realized revenue (Modo's BESS Index ~$17/kW/yr in 2025) quantifies the capture rate and decomposition of the gap.
+Energy arbitrage — buying electricity when cheap, selling when expensive — is the primary revenue stream for standalone BESS in ERCOT. The theoretical maximum revenue under **perfect price foresight** establishes an upper bound that real operators approach but never reach. Comparing this bound to actual realized revenue (Modo's BESS Index ~$17/kW/yr, ERCOT fleet average, 2025 YTD) quantifies the capture rate and decomposition of the gap. *Note: This comparison is illustrative — the Modo figure covers a different year, asset mix, and market conditions than our 2024 backtest.*
 
 ### Research Questions
 1. What is the perfect-foresight arbitrage revenue at each ERCOT hub?
@@ -245,10 +245,11 @@ All 5 tests pass.
 ```
 
 ### Benchmark Comparison
-- **Modo BESS Index (2025)**: ~$17/kW/yr actual realized ERCOT revenue
+- **Modo BESS Index (2025 YTD)**: ~$17/kW/yr actual realized ERCOT fleet average (source: modoenergy.com). This is approximate and covers a different year, asset mix, and market conditions than our 2024 backtest.
 - **Our perfect-foresight result**: $76-$94/kW/yr at hubs
 - **Implied capture rate**: ~18-22%
 - **Reasonableness**: Academic literature reports 15-30% capture rates for day-ahead arbitrage with imperfect forecasting, consistent with our gap.
+- **Caveat**: Direct comparison is illustrative, not precise. The gap decomposition (forecasting ~53%, ancillary ~11%, degradation+O&M ~9%, transaction costs ~9%) is approximate.
 
 ### Cross-Validation
 - Revenue is positive for all locations (optimizer working correctly)

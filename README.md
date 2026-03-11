@@ -102,7 +102,7 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 
 ![Hub Revenue Comparison](data/results/hub_revenue_comparison.png)
 
-1. **Capture rate gap:** Perfect foresight yields $76–$136/kW/yr. Modo BESS Index shows ~$17/kW actual (2025) — operators capture only **~18% of theoretical maximum**. The gap is dominated by forecasting uncertainty, not market structure.
+1. **Capture rate gap:** Perfect foresight yields $76–$136/kW/yr. Modo BESS Index shows ~$17/kW/yr (ERCOT fleet avg, 2025 YTD) — operators capture only **~18% of theoretical maximum**. The gap is dominated by forecasting uncertainty, not market structure. *(Note: Modo comparison is illustrative — different year, asset mix, and methodology than our 2024 backtest.)*
 
 2. **Nodal basis matters:** Resource nodes average **+21% vs hub** revenue. Same region (West TX), dramatically different economics. A developer siting at Lamesa Solar's node earns $136/kW; at Misae Solar's node, only $90/kW. Hub-only analysis masks this $46/kW spread.
 

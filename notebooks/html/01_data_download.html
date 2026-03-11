@@ -8474,15 +8474,17 @@ Total Energy: 15,355 MWh
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=wze97mvb9v">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=wze97mvb9v">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Master site configuration — 6 ERCOT assets with resource nodes in GCS</span>
+<span class="c1"># Note: spinning_spur_wind_iii (SSPURT_WIND1) is included here for generation data download,</span>
+<span class="c1"># but excluded from NB 04 backtest because no LMP price data exists in GCS for this node.</span>
 <span class="n">SITES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'lamesa_solar'</span><span class="p">:</span>           <span class="p">{</span><span class="s1">'type'</span><span class="p">:</span> <span class="s1">'solar'</span><span class="p">,</span> <span class="s1">'mw'</span><span class="p">:</span> <span class="mf">102.0</span><span class="p">,</span>  <span class="s1">'node'</span><span class="p">:</span> <span class="s1">'LAMESASLR_G'</span><span class="p">,</span>   <span class="s1">'hub'</span><span class="p">:</span> <span class="s1">'HB_WEST'</span><span class="p">},</span>
     <span class="s1">'misae_solar'</span><span class="p">:</span>            <span class="p">{</span><span class="s1">'type'</span><span class="p">:</span> <span class="s1">'solar'</span><span class="p">,</span> <span class="s1">'mw'</span><span class="p">:</span> <span class="mf">240.0</span><span class="p">,</span>  <span class="s1">'node'</span><span class="p">:</span> <span class="s1">'MISAE_GEN_RN'</span><span class="p">,</span>  <span class="s1">'hub'</span><span class="p">:</span> <span class="s1">'HB_WEST'</span><span class="p">},</span>
@@ -8501,25 +8503,6 @@ Total Energy: 15,355 MWh
 <span class="k">for</span> <span class="n">slug</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">SITES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">slug</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'mw'</span><span class="p">]</span><span class="si">}</span><span class="s2"> MW @ </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'node'</span><span class="p">]</span><span class="si">}</span><span class="s2"> (hub: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'hub'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Sites: 6
-  lamesa_solar: solar 102.0 MW @ LAMESASLR_G (hub: HB_WEST)
-  misae_solar: solar 240.0 MW @ MISAE_GEN_RN (hub: HB_WEST)
-  longhorn_wind: wind 200.0 MW @ LHORN_N_U1_2 (hub: HB_WEST)
-  panther_creek_wind_i: wind 142.5 MW @ PC_NORTH_1 (hub: HB_WEST)
-  spinning_spur_wind_iii: wind 194.0 MW @ SSPURT_WIND1 (hub: HB_WEST)
-  stanton_wind_energy: wind 120.0 MW @ SWEC_G1 (hub: HB_WEST)
-</pre>
 </div>
 </div>
 </div>
