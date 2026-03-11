@@ -112,6 +112,17 @@ export function getHeatmapSlice(
   );
 }
 
+/** Snap to the nearest RTE value that exists in the matrix */
+export function snapRte(matrix: ScenarioResult[], rte: number): number {
+  const unique = [...new Set(matrix.map((s) => s.rte))].sort((a, b) => a - b);
+  if (unique.length === 0) return rte;
+  let best = unique[0];
+  for (const v of unique) {
+    if (Math.abs(v - rte) < Math.abs(best - rte)) best = v;
+  }
+  return best;
+}
+
 /** Get all scenarios for a given location/market across all years (for one RTE+duration) */
 export function getYearSlice(
   matrix: ScenarioResult[],
@@ -120,12 +131,13 @@ export function getYearSlice(
   rte: number,
   durationHours: number
 ): ScenarioResult[] {
+  const snapped = snapRte(matrix, rte);
   return matrix
     .filter(
       (s) =>
         s.location === location &&
         s.market === market &&
-        s.rte === rte &&
+        s.rte === snapped &&
         s.duration_hours === durationHours
     )
     .sort((a, b) => a.year - b.year);
@@ -139,11 +151,12 @@ export function getLocationSlice(
   rte: number,
   durationHours: number
 ): ScenarioResult[] {
+  const snapped = snapRte(matrix, rte);
   return matrix.filter(
     (s) =>
       s.market === market &&
       s.year === year &&
-      s.rte === rte &&
+      s.rte === snapped &&
       s.duration_hours === durationHours
   );
 }

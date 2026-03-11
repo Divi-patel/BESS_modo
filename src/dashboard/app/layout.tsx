@@ -21,8 +21,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BESS Arbitrage Dashboard — ERCOT",
-  description: "Interactive analysis of battery energy storage revenue across ERCOT hubs and nodes",
+  title: "ERCOT BESS Revenue — Hub & Node Analysis",
+  description: "Interactive analysis of battery energy storage revenue across ERCOT hubs and resource nodes",
 };
 
 export default function RootLayout({

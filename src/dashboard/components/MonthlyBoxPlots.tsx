@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState, useMemo } from "react";
 import { getChartTheme, baseLayout } from "@/lib/chart-theme";
 import { useDashboard } from "./DashboardProvider";
+import { snapRte } from "@/lib/scenario-matrix";
 import { computeMonthlyStats } from "@/lib/stats";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -21,12 +22,13 @@ export function MonthlyBoxPlots() {
   const { config, matrix } = useDashboard();
 
   const stats = useMemo(() => {
-    // Get all years for this location/market/rte/duration
+    // Get all years for this location/market/rte/duration (snap to nearest grid point)
+    const snappedRte = snapRte(matrix, config.rte);
     const scenarios = matrix.filter(
       (s) =>
         s.location === config.location &&
         s.market === config.market &&
-        s.rte === config.rte &&
+        s.rte === snappedRte &&
         s.duration_hours === config.durationHours
     );
 

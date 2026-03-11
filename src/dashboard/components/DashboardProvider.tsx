@@ -8,6 +8,7 @@ import {
   useMemo,
   type ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 import type {
   BessConfig,
   ScenarioResult,
@@ -68,19 +69,9 @@ function configFromParams(): Partial<BessConfig> {
   return partial;
 }
 
-function syncParamsToUrl(config: BessConfig) {
-  if (typeof window === "undefined") return;
-  const p = new URLSearchParams();
-  p.set("location", config.location);
-  p.set("market", config.market);
-  p.set("year", String(config.year));
-  p.set("rte", String(config.rte));
-  p.set("duration", String(config.durationHours));
-  const url = `${window.location.pathname}?${p.toString()}`;
-  window.history.replaceState(null, "", url);
-}
-
 export function DashboardProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
   const [config, setConfigState] = useState<BessConfig>(() => ({
     ...DEFAULT_CONFIG,
     ...configFromParams(),
@@ -95,10 +86,17 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     setConfigState((prev) => ({ ...prev, ...update }));
   };
 
-  // Sync config → URL params
+  // Sync config → URL params (uses Next.js pathname so it doesn't fight client-side navigation)
   useEffect(() => {
-    syncParamsToUrl(config);
-  }, [config]);
+    const p = new URLSearchParams();
+    p.set("location", config.location);
+    p.set("market", config.market);
+    p.set("year", String(config.year));
+    p.set("rte", String(config.rte));
+    p.set("duration", String(config.durationHours));
+    const url = `${pathname}?${p.toString()}`;
+    window.history.replaceState(null, "", url);
+  }, [config, pathname]);
 
   // Load all data on mount
   useEffect(() => {

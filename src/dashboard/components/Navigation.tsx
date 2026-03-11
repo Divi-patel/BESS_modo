@@ -37,7 +37,7 @@ export function Navigation() {
       <div className="flex items-center gap-5">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold tracking-tight text-[var(--color-text)]">
-            BESS Arbitrage
+            ERCOT BESS Revenue
           </span>
           <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-[var(--color-safe-subtle)] text-[var(--color-safe)] border border-[var(--color-safe)]/30">
             GEN 1
