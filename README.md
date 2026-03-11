@@ -4,7 +4,7 @@
 >
 > **Divy Patel** · MSc Financial Engineering, Stevens Institute of Technology · BTech Computer Science, Gujarat Technological University
 >
-> March 2026
+> **[Live Demo →](https://dashboard-lac-kappa-22.vercel.app)** · March 2026
 
 ## Point of View
 
