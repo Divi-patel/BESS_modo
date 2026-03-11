@@ -28,6 +28,8 @@ data/extra/*.parquet
 !data/extra/README.md
 docs/extra/*
 !docs/extra/README.md
+docs/plan/*
+!docs/plan/README.md
 
 # IDE
 .vscode/

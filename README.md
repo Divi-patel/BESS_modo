@@ -123,7 +123,7 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 - **BESS traders:** The 18% capture rate means massive upside from better price forecasting. Each 1% improvement in capture is worth ~$1/kW/yr across a fleet.
 - **Asset owners:** Node selection matters as much as hub selection. Due diligence on nodal congestion patterns is essential.
 - **Developers:** 4h duration is well-justified by the diminishing returns curve. RTE improvements (80%→95%) add ~$9/kW/yr — chemistry selection has real revenue impact.
-- **Project finance:** Single-year revenue varies significantly. A bankable model needs multi-year stochastic analysis ([Gen 3 roadmap](docs/way_ahead.md#4-gen-3-stochastic-modeling--risk-quantification)).
+- **Project finance:** Single-year revenue varies significantly. A bankable model needs multi-year stochastic analysis ([Gen 3 roadmap](docs/solution/way_ahead.md#4-gen-3-stochastic-modeling--risk-quantification)).
 
 ---
 
@@ -151,7 +151,8 @@ BESS_modo/
 │   ├── 01_data_download.ipynb ............. Download ERCOT LMP prices + validate
 │   ├── 02_price_exploration.ipynb ......... Price stats, volatility, basis risk
 │   ├── 03_dispatch_optimizer.ipynb ........ CVXPY LP optimizer + 5 sanity tests
-│   └── 04_backtest_colocation.ipynb ....... Full backtest + DA/RT + sensitivity
+│   ├── 04_backtest_colocation.ipynb ....... Full backtest + DA/RT + sensitivity
+│   └── html/ .............................. Static HTML renders (no Jupyter needed)
 ├── data/
 │   ├── bess_enriched.parquet .............. 1,331 US BESS units (EIA-860)
 │   ├── results/ ........................... Backtest outputs + charts
@@ -160,11 +161,17 @@ BESS_modo/
 │   ├── generation/ ........................ Solar/wind gen data (not tracked)
 │   └── extra/ ............................. Schema docs, 55k nodes (not tracked)
 ├── docs/
-│   ├── BESS_Hybrid_Storage_Problem_Statement.md ... Why this problem matters
-│   ├── methodology.md ..................... LP formulation, assumptions, validation
-│   ├── way_ahead.md ....................... Gen 2-5 roadmap, extensions, value prop
-│   ├── ai_usage.md ........................ AI tools, workflow, contribution
-│   └── plan/gen1_implementation.md ........ Implementation plan
+│   ├── problem_statement/
+│   │   ├── BESS_Hybrid_Storage_Problem_Statement.md ... Why this problem matters
+│   │   └── BESS_Problem_Statement_Report.pdf .......... Formal PDF version
+│   ├── solution/
+│   │   ├── methodology.md ................ LP formulation, assumptions, validation
+│   │   ├── way_ahead.md .................. Gen 2-5 roadmap, extensions, value prop
+│   │   └── ai_usage.md ................... AI tools, workflow, contribution
+│   ├── plan/
+│   │   └── README.md ..................... Agent planning workflow
+│   └── extra/
+│       └── README.md ..................... Research & context (gitignored content)
 ├── resume/
 │   ├── Divy_Patel_Resume_Modo.pdf
 │   └── Divy_Patel_CoverLetter_Modo.pdf
@@ -174,11 +181,13 @@ BESS_modo/
 | Directory | What's Inside | Tracked |
 |-----------|--------------|---------|
 | [`notebooks/`](notebooks/) | 4 Jupyter notebooks — the primary deliverable | Yes |
+| [`notebooks/html/`](notebooks/html/) | Static HTML renders of all notebooks (no Jupyter needed) | Yes |
 | [`data/results/`](data/results/) | Revenue CSVs, sensitivity CSVs, 7 chart PNGs | Yes |
 | [`data/bess_enriched.parquet`](data/) | EIA-860 enriched BESS fleet (1,331 units) | Yes |
 | `data/prices/` | ERCOT LMP parquets (85 MB, 4 hubs + 5 nodes) | No — re-downloadable |
 | `data/extra/` | Schema docs, pricing node coordinates | No — [see README](data/extra/README.md) |
-| [`docs/`](docs/) | Problem statement, methodology, roadmap, AI usage | Yes |
+| [`docs/problem_statement/`](docs/problem_statement/) | Problem statement (MD + PDF) | Yes |
+| [`docs/solution/`](docs/solution/) | Methodology, roadmap, AI usage | Yes |
 | [`resume/`](resume/) | Resume + cover letter | Yes |
 
 ---
@@ -186,7 +195,7 @@ BESS_modo/
 <details>
 <summary><strong>Methodology</strong> (click to expand)</summary>
 
-**Full details:** [docs/methodology.md](docs/methodology.md)
+**Full details:** [docs/solution/methodology.md](docs/solution/methodology.md)
 
 ### Dispatch Optimization
 Linear program (CVXPY/CLARABEL) with perfect price foresight:
@@ -236,7 +245,7 @@ Linear program (CVXPY/CLARABEL) with perfect price foresight:
 
 ## Roadmap (Gen 2–5)
 
-**Full details:** [docs/way_ahead.md](docs/way_ahead.md)
+**Full details:** [docs/solution/way_ahead.md](docs/solution/way_ahead.md)
 
 ```mermaid
 flowchart LR
@@ -264,11 +273,12 @@ flowchart LR
 
 | Document | Description |
 |----------|-------------|
-| [Problem Statement](docs/BESS_Hybrid_Storage_Problem_Statement.md) | Why BESS financial modeling matters — market context, competitive landscape, foundational infrastructure |
-| [Methodology](docs/methodology.md) | LP formulation, asset assumptions, data provenance, validation, industry comparison |
-| [Way Ahead](docs/way_ahead.md) | Gen 2-5 roadmap, ancillary services, hybrid systems, degradation, value prop for plant owners |
-| [AI Usage](docs/ai_usage.md) | Claude Code workflow, debugging examples, AI vs human contribution |
-| [Implementation Plan](docs/plan/gen1_implementation.md) | Step-by-step execution plan for Gen 1 |
+| [Problem Statement](docs/problem_statement/BESS_Hybrid_Storage_Problem_Statement.md) | Why BESS financial modeling matters — market context, competitive landscape, foundational infrastructure |
+| [Problem Statement (PDF)](docs/problem_statement/BESS_Problem_Statement_Report.pdf) | Formal PDF version |
+| [Methodology](docs/solution/methodology.md) | LP formulation, asset assumptions, data provenance, validation, industry comparison |
+| [Way Ahead](docs/solution/way_ahead.md) | Gen 2-5 roadmap, ancillary services, hybrid systems, degradation, value prop for plant owners |
+| [AI Usage](docs/solution/ai_usage.md) | Claude Code workflow, debugging examples, AI vs human contribution |
+| [Planning Workflow](docs/plan/README.md) | Agent planning workflow and conventions |
 
 ## Production Infrastructure Note
 

@@ -8,7 +8,7 @@
 ## How AI Was Used
 
 ### Planning
-- Generated the multi-phase implementation plan ([gen1_implementation.md](plan/gen1_implementation.md))
+- Generated the multi-phase implementation plan ([agent planning workflow](../plan/README.md))
 - Identified optimal data sources (raw LMP vs forecast prices) and methodology (CVXPY LP formulation)
 - Designed the notebook-first workflow with validation at each step
 - Audited the submission against Modo's evaluation criteria to identify gaps (DA vs RT, sensitivity analysis, methodology doc)

@@ -18,6 +18,34 @@ Energy arbitrage — buying electricity when cheap, selling when expensive — i
 
 The dispatch optimization is formulated as a linear program, solved independently for each month to provide monthly revenue granularity and enforce cyclic SOC constraints.
 
+```
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    LP OPTIMIZATION FLOW                      │
+    │                                                              │
+    │   ERCOT LMP         Asset Params        Monthly Window       │
+    │   prices(t)         P=100MW, E=400MWh   Jan, Feb, ... Dec    │
+    │       │              η=0.933                  │               │
+    │       ▼                  │                    ▼               │
+    │   ┌──────────────────────┴──────────────────────┐            │
+    │   │         CVXPY Linear Program                │            │
+    │   │                                             │            │
+    │   │  max Σ price(t) × [p_dis(t) - p_ch(t)]     │            │
+    │   │                                             │            │
+    │   │  s.t.  SOC dynamics (energy balance)        │            │
+    │   │        Power limits (0 ≤ p ≤ 100 MW)       │            │
+    │   │        SOC bounds (20 ≤ soc ≤ 380 MWh)     │            │
+    │   │        Cyclic SOC (start = end = 200 MWh)   │            │
+    │   └─────────────────┬───────────────────────────┘            │
+    │                     ▼                                        │
+    │   ┌─────────────────────────────────────┐                    │
+    │   │  p_ch(t), p_dis(t), soc(t) for t∈T │                    │
+    │   │  Monthly revenue = Σ price × net    │                    │
+    │   └─────────────────────────────────────┘                    │
+    │                     │                                        │
+    │         Sum 12 months → Annual $/kW/yr                       │
+    └─────────────────────────────────────────────────────────────┘
+```
+
 **Decision Variables:**
 - `p_ch(t)` : Charging power at hour t [MW], non-negative
 - `p_dis(t)` : Discharging power at hour t [MW], non-negative
@@ -36,6 +64,28 @@ where `price(t)` is the LMP at hour t ($/MWh) and `Δt = 1 hour`.
 1. **SOC dynamics** (energy conservation with efficiency losses):
 ```
 soc(t+1) = soc(t) + η_ch × p_ch(t) × Δt - (1/η_dis) × p_dis(t) × Δt
+```
+
+```
+    SOC Dynamics — One Charge/Discharge Cycle (4-hour battery)
+
+    SOC
+    (MWh)
+    380 ┤                    ╭────╮
+        │                   ╱      ╲
+    300 ┤                  ╱        ╲
+        │                 ╱          ╲
+    200 ┤────────────────╱            ╲────────────────
+        │   idle        ↑ charge      ↑ discharge  idle
+    100 ┤            η=0.933       1/η=1.072
+        │          (grid→bat)     (bat→grid)
+     20 ┤ ─ ─ ─ ─ SOC_min (5%) ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+        └──────┬──────┬──────┬──────┬──────┬──────┬───→ t
+               0      4      8     12     16     20
+
+    Energy in from grid:   ~193 MWh  (to go 200→380 MWh stored)
+    Energy out to grid:    ~168 MWh  (from 380→200 MWh stored)
+    Round-trip loss:        ~25 MWh  (13% of input)
 ```
 
 2. **Power limits:**
@@ -63,6 +113,25 @@ Round-trip efficiency (RTE) is split equally between charge and discharge:
 ```
 
 This means 1 MWh of grid energy becomes 0.933 MWh stored, and 1 MWh stored delivers 0.933 MWh to the grid. Net round-trip: 0.933 × 0.933 = 0.87 (87%).
+
+```
+    EFFICIENCY SPLIT — Where Energy Goes in a Round Trip
+
+    Grid                Battery               Grid
+    ─────────────────►  Storage  ─────────────────►
+         CHARGE          (MWh)        DISCHARGE
+
+    1.000 MWh          0.933 MWh          0.870 MWh
+    from grid    ×0.933  stored     ×0.933  to grid
+    ━━━━━━━━━━━  ─────► ━━━━━━━━━  ─────► ━━━━━━━━━
+    ██████████          ████████▒          ███████░░
+    100%                93.3%              87.0%
+                         │                   │
+                    Loss: 6.7%          Loss: 6.3%
+                   (charge side)     (discharge side)
+
+    Total round-trip: 0.933 × 0.933 = 0.870 = 87% RTE
+```
 
 ### Why LP (not MILP)?
 
@@ -157,6 +226,24 @@ Selection criteria: Real operating assets with (a) known pricing nodes in EIA da
 
 All 5 tests pass.
 
+### Results Summary
+
+```
+    Hub Revenue (RT, 2024, 100MW/400MWh, 87% RTE)
+
+    HB_HOUSTON  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░  $76/kW/yr
+    HB_NORTH    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░  $79/kW/yr
+    HB_SOUTH    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░  $79/kW/yr
+    HB_WEST     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  $94/kW/yr  ★
+                ├─────────┼─────────┼─────────┼─────────┤
+                0        25        50        75       100
+                                                    $/kW/yr
+
+    Modo BESS Index (actual 2025):  ▒▒▒▒▒▒░  ~$17/kW/yr
+    ──────────────────────────────
+    Gap = capture rate ~18% — dominated by forecasting uncertainty
+```
+
 ### Benchmark Comparison
 - **Modo BESS Index (2025)**: ~$17/kW/yr actual realized ERCOT revenue
 - **Our perfect-foresight result**: $76-$94/kW/yr at hubs
@@ -194,7 +281,52 @@ All 5 tests pass.
 
 Our approach (perfect foresight LP) is deliberately chosen as the upper bound benchmark. The gap between this and Modo's actual index quantifies the aggregate cost of uncertainty, inefficiency, and real-world constraints.
 
-## 9. Gen 2-5 Roadmap
+## 9. Asset Design Sensitivity
+
+```
+    Revenue vs Duration (HB_WEST RT, 87% RTE)
+
+    $/kW/yr
+    120 ┤                                          ╭──── 8h: $117
+        │                                    ╭─────╯
+    100 ┤                              ╭─────╯
+        │                        ╭─────╯             ← 4h: $94
+     80 ┤                  ╭─────╯                     (sweet spot)
+        │            ╭─────╯
+     60 ┤      ╭─────╯
+        │ ╭────╯
+     40 ┤─╯                                           ← 1h: $39
+        │
+     20 ┤     81% of 8h revenue
+        │     at half the capex
+      0 ┤─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────►
+              1     2     3     4     5     6     7     8
+                              Duration (hours)
+
+    Key: 1h→4h adds $55/kW/yr (+141%)
+         4h→8h adds $23/kW/yr (+24%)  ← diminishing returns
+```
+
+```
+    Revenue vs RTE (HB_WEST RT, 4h duration)
+
+    $/kW/yr
+    100 ┤                                          ● 95%: $99
+        │                                ●──────────
+     96 ┤                       ●────────  90%: $96
+        │               ●──────  87%: $94
+     92 ┤        ●──────  85%: $93
+        │ ●──────  80%: $90
+     88 ┤
+        └──────┬──────┬──────┬──────┬──────►
+              80     85     87     90     95
+                        RTE (%)
+
+    Each +1% RTE ≈ +$0.6/kW/yr
+    Chemistry choice (LFP 87% vs advanced 95%) = $9/kW/yr spread
+```
+
+## 10. Gen 2-5 Roadmap
 
 | Generation | Capability | Key Addition |
 |------------|-----------|-------------|
