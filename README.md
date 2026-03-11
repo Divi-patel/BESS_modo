@@ -131,7 +131,9 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 
 ## Interactive Dashboard
 
-> **[Live Demo →](https://dbessmodo.vercel.app)**
+> ### **[Live Demo → dbessmodo.vercel.app](https://dbessmodo.vercel.app)**
+>
+> 6 pages · 9 locations · 7,630 scenarios · Configurable BESS parameters · Dark/light theme
 
 The full analysis is available as an interactive Next.js dashboard with 6 pages, configurable BESS parameters, and 7,630 pre-computed dispatch scenarios:
 
