@@ -15,12 +15,19 @@ build/
 # macOS
 .DS_Store
 
-# Large data (re-downloadable from GCS)
+# Large data (re-downloadable from cloud pipeline)
 data/raw/
 data/prices/
 data/revenue/
 data/generation/
 data/asset_registry.duckdb
+
+# Proprietary schema docs and internal data (see README placeholders)
+data/extra/*.md
+data/extra/*.parquet
+!data/extra/README.md
+docs/extra/*
+!docs/extra/README.md
 
 # IDE
 .vscode/

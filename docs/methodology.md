@@ -101,7 +101,7 @@ CVXPY with CLARABEL backend (interior-point method). Solve time: <2 seconds per 
 ## 4. Data Sources & Provenance
 
 ### LMP Prices
-- **Source**: ERCOT Nodal Market, via custom GCS pipeline (`gs://infrasure-model-gpr-data/lmp_prices/`)
+- **Source**: ERCOT Nodal Market, via custom cloud data pipeline
 - **Original source**: ERCOT Settlement Point Prices (SPP), collected via gridstatus library
 - **Processing**: 15-minute native → resampled to hourly (mean). Raw SPP preserved (not clipped/compressed).
 - **Coverage**: 2010-2025, hourly UTC timestamps (tz-aware)

@@ -6,6 +6,66 @@
 
 Hub-level BESS revenue analysis systematically misprices battery value. By comparing dispatch optimization at ERCOT hubs versus real generation site nodes, we quantify how much nodal basis, market selection, and asset design actually matter — producing the exact $/kW/yr metric that Modo's customers use to make investment decisions.
 
+---
+
+## Analysis Pipeline
+
+```mermaid
+flowchart LR
+    A["Cloud Data Pipeline\n(LMP Prices, Gen Data)"] --> B["NB 01\nData Download"]
+    B --> C["NB 02\nPrice Exploration"]
+    C --> D["NB 03\nDispatch Optimizer"]
+    D --> E["NB 04\nFull Backtest"]
+    E --> F["Results\n$/kW/yr, Charts, CSVs"]
+
+    G["EIA-860\nBESS Fleet"] --> B
+    H["55k Pricing Nodes\nw/ Coordinates"] --> B
+
+    style A fill:#e1f5fe
+    style F fill:#e8f5e9
+    style E fill:#fff3e0
+```
+
+```mermaid
+flowchart TB
+    subgraph "Data Layer"
+        P["ERCOT LMP Prices\n4 Hubs + 5 Nodes\nDA + RT Hourly"]
+        B["BESS Fleet\n1,331 US Units\n155 ERCOT Operating"]
+        N["Pricing Nodes\n55,408 US Nodes\n19,942 ERCOT"]
+    end
+
+    subgraph "Optimization Layer"
+        LP["CVXPY Linear Program\nmax Σ price × (discharge - charge)\nSOC dynamics, efficiency, bounds"]
+    end
+
+    subgraph "Analysis Layer"
+        HUB["Hub Backtest\n4 ERCOT Hubs"]
+        NODE["Node Backtest\n5 Resource Nodes"]
+        DA["DA vs RT\nMarket Comparison"]
+        SENS["Sensitivity\nRTE + Duration"]
+    end
+
+    subgraph "Output Layer"
+        REV["$/kW/yr Revenue"]
+        BASIS["Basis Impact %"]
+        CHARTS["Visualizations"]
+    end
+
+    P --> LP
+    B --> LP
+    N --> LP
+    LP --> HUB
+    LP --> NODE
+    LP --> DA
+    LP --> SENS
+    HUB --> REV
+    NODE --> BASIS
+    DA --> REV
+    SENS --> CHARTS
+```
+
+---
+
 ## Key Findings (2024 Backtest, 100MW/400MWh LFP)
 
 ### Hub Revenue (RT Prices)
@@ -63,7 +123,9 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 - **BESS traders:** The 18% capture rate means massive upside from better price forecasting. Each 1% improvement in capture is worth ~$1/kW/yr across a fleet.
 - **Asset owners:** Node selection matters as much as hub selection. Due diligence on nodal congestion patterns is essential.
 - **Developers:** 4h duration is well-justified by the diminishing returns curve. RTE improvements (80%→95%) add ~$9/kW/yr — chemistry selection has real revenue impact.
-- **Project finance:** Single-year revenue varies significantly. A bankable model needs multi-year stochastic analysis (Gen 3 roadmap).
+- **Project finance:** Single-year revenue varies significantly. A bankable model needs multi-year stochastic analysis ([Gen 3 roadmap](docs/way_ahead.md#4-gen-3-stochastic-modeling--risk-quantification)).
+
+---
 
 ## Quick Start
 
@@ -75,33 +137,54 @@ pip install -r requirements.txt
 jupyter lab notebooks/
 ```
 
-To re-run from scratch, you'll need GCS access to `gs://infrasure-model-gpr-data` for price data.
+To re-run from scratch, you'll need access to the production cloud data pipeline for price data (see NB 01 for details). As a fallback, ERCOT prices can be obtained via the open-source [gridstatus](https://github.com/kmax12/gridstatus) library.
+
+---
 
 ## Project Structure
+
+> Click any link to navigate directly to the file.
 
 ```
 BESS_modo/
 ├── notebooks/
-│   ├── 01_data_download.ipynb          # Download ERCOT LMP prices from GCS
-│   ├── 02_price_exploration.ipynb      # Price stats, volatility, basis risk analysis
-│   ├── 03_dispatch_optimizer.ipynb     # CVXPY LP optimizer + 5 sanity tests
-│   └── 04_backtest_colocation.ipynb    # Full backtest + DA/RT + sensitivity + findings
+│   ├── 01_data_download.ipynb ............. Download ERCOT LMP prices + validate
+│   ├── 02_price_exploration.ipynb ......... Price stats, volatility, basis risk
+│   ├── 03_dispatch_optimizer.ipynb ........ CVXPY LP optimizer + 5 sanity tests
+│   └── 04_backtest_colocation.ipynb ....... Full backtest + DA/RT + sensitivity
 ├── data/
-│   ├── bess_enriched.parquet           # 1,331 US BESS units (EIA-860 enriched)
-│   ├── prices/                         # ERCOT LMP parquets (4 hubs + 5 nodes, RT+DA)
-│   ├── results/                        # Backtest outputs, sensitivity CSVs, charts
-│   ├── revenue/                        # Historical generation revenue by site
-│   └── extra/                          # 55k pricing nodes, schemas, GCS docs
+│   ├── bess_enriched.parquet .............. 1,331 US BESS units (EIA-860)
+│   ├── results/ ........................... Backtest outputs + charts
+│   ├── prices/ ............................ ERCOT LMP parquets (not tracked)
+│   ├── revenue/ ........................... Gen revenue by site (not tracked)
+│   ├── generation/ ........................ Solar/wind gen data (not tracked)
+│   └── extra/ ............................. Schema docs, 55k nodes (not tracked)
 ├── docs/
-│   ├── methodology.md                  # Detailed LP formulation, assumptions, validation
-│   ├── ai_usage.md                     # AI usage documentation (required)
-│   ├── BESS_Hybrid_Storage_Problem_Statement.md
-│   └── plan/gen1_implementation.md
-├── resume/Divy_Patel_Resume_Modo.pdf
+│   ├── BESS_Hybrid_Storage_Problem_Statement.md ... Why this problem matters
+│   ├── methodology.md ..................... LP formulation, assumptions, validation
+│   ├── way_ahead.md ....................... Gen 2-5 roadmap, extensions, value prop
+│   ├── ai_usage.md ........................ AI tools, workflow, contribution
+│   └── plan/gen1_implementation.md ........ Implementation plan
+├── resume/
+│   ├── Divy_Patel_Resume_Modo.pdf
+│   └── Divy_Patel_CoverLetter_Modo.pdf
 └── requirements.txt
 ```
 
-## Methodology
+| Directory | What's Inside | Tracked |
+|-----------|--------------|---------|
+| [`notebooks/`](notebooks/) | 4 Jupyter notebooks — the primary deliverable | Yes |
+| [`data/results/`](data/results/) | Revenue CSVs, sensitivity CSVs, 7 chart PNGs | Yes |
+| [`data/bess_enriched.parquet`](data/) | EIA-860 enriched BESS fleet (1,331 units) | Yes |
+| `data/prices/` | ERCOT LMP parquets (85 MB, 4 hubs + 5 nodes) | No — re-downloadable |
+| `data/extra/` | Schema docs, pricing node coordinates | No — [see README](data/extra/README.md) |
+| [`docs/`](docs/) | Problem statement, methodology, roadmap, AI usage | Yes |
+| [`resume/`](resume/) | Resume + cover letter | Yes |
+
+---
+
+<details>
+<summary><strong>Methodology</strong> (click to expand)</summary>
 
 **Full details:** [docs/methodology.md](docs/methodology.md)
 
@@ -113,14 +196,17 @@ Linear program (CVXPY/CLARABEL) with perfect price foresight:
 - **Backtest:** Monthly rolling optimization (cyclic SOC per month), hourly resolution
 
 ### Data Sources
-- **LMP Prices:** ERCOT hub + resource node prices from production GCS pipeline. Raw SPP (not forecast-compressed) — preserves $9k spikes critical for arbitrage valuation.
+- **LMP Prices:** ERCOT hub + resource node prices from production cloud data pipeline. Raw SPP (not forecast-compressed) — preserves $9k spikes critical for arbitrage valuation.
 - **BESS Fleet:** EIA-860 enriched (1,331 US units, 155 ERCOT operating, 10,105 MW)
 - **Pricing Nodes:** 55,408 US ISO nodes with lat/long (19,942 ERCOT)
 
 ### Validation
-5 sanity tests on optimizer (synthetic prices, flat prices, revenue ≥ 0, SOC bounds, RTE monotonicity). Results benchmarked against Modo BESS Index.
+5 sanity tests on optimizer (synthetic prices, flat prices, revenue >= 0, SOC bounds, RTE monotonicity). Results benchmarked against Modo BESS Index.
 
-## What Differentiates This
+</details>
+
+<details>
+<summary><strong>What Differentiates This</strong> (click to expand)</summary>
 
 | Aspect | This Submission | Typical Analysis |
 |--------|----------------|-----------------|
@@ -128,22 +214,62 @@ Linear program (CVXPY/CLARABEL) with perfect price foresight:
 | Basis quantification | Node-level $/kW/yr + % impact | Not analyzed |
 | Markets | DA + RT comparison | Usually RT only |
 | Sensitivity | RTE + duration sweeps | Fixed parameters |
-| Data infrastructure | Production GCS pipeline, 55k nodes | CSV downloads |
+| Data infrastructure | Production cloud pipeline, 55k nodes | CSV downloads |
 | Metric | $/kW/yr (Modo's BESS Index) | Total $ or $/MWh |
 | Co-location | Real solar/wind sites with gen revenue | Hypothetical |
 
-## Limitations
+</details>
+
+<details>
+<summary><strong>Limitations</strong> (click to expand)</summary>
+
 - Perfect foresight = theoretical upper bound (not achievable)
 - No ancillary services, degradation, or transaction costs
 - Single-year (2024); multi-year needed for regime sensitivity
 - No behind-the-meter or shared interconnection constraints
 - No DA+RT co-optimization (each market analyzed independently)
+- Energy arbitrage only — does not capture ancillary, capacity, or contract revenues
+
+</details>
+
+---
 
 ## Roadmap (Gen 2–5)
-- **Gen 2:** Hybrid systems — solar+storage coupling, export constraints
-- **Gen 3:** Stochastic modeling — price scenarios, P50/P90 revenue bands
-- **Gen 4:** Degradation — cycle counting, capacity fade in objective
-- **Gen 5:** Portfolio — multi-asset, multi-node batch optimization
+
+**Full details:** [docs/way_ahead.md](docs/way_ahead.md)
+
+```mermaid
+flowchart LR
+    G1["Gen 1 ✅\nEnergy Arbitrage\nPerfect Foresight"] --> G2["Gen 2\nHybrid Systems\nSolar+Storage"]
+    G2 --> G3["Gen 3\nStochastic\nP50/P90 Bands"]
+    G3 --> G4["Gen 4\nDegradation\nLifecycle Economics"]
+    G4 --> G5["Gen 5\nPortfolio\nFleet Optimization"]
+    G5 --> BANK["Bankable Output\nLender-Grade\nRevenue Forecast"]
+
+    style G1 fill:#e8f5e9,stroke:#4caf50
+    style BANK fill:#fff3e0,stroke:#ff9800
+```
+
+| Gen | Adds | Key Output |
+|-----|------|-----------|
+| **1** (delivered) | Perfect-foresight energy arbitrage | $/kW/yr upper bound, basis impact |
+| **2** | Hybrid solar+storage coupling, export constraints | Co-location revenue impact |
+| **3** | Price scenarios, Monte Carlo, uncertainty bands | P50/P90 revenue, DSCR |
+| **4** | Cycle counting, capacity fade, chemistry comparison | Lifecycle NPV |
+| **5** | Multi-asset, cross-node portfolio optimization | Fleet-level risk metrics |
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Problem Statement](docs/BESS_Hybrid_Storage_Problem_Statement.md) | Why BESS financial modeling matters — market context, competitive landscape, foundational infrastructure |
+| [Methodology](docs/methodology.md) | LP formulation, asset assumptions, data provenance, validation, industry comparison |
+| [Way Ahead](docs/way_ahead.md) | Gen 2-5 roadmap, ancillary services, hybrid systems, degradation, value prop for plant owners |
+| [AI Usage](docs/ai_usage.md) | Claude Code workflow, debugging examples, AI vs human contribution |
+| [Implementation Plan](docs/plan/gen1_implementation.md) | Step-by-step execution plan for Gen 1 |
 
 ## Production Infrastructure Note
+
 This submission focuses on **analytical depth and market insight**. Production infrastructure (FastAPI, Vercel, Supabase, automated data pipelines) is demonstrated in other projects — this prioritizes modeling rigor and clear communication of findings relevant to Modo's customers.

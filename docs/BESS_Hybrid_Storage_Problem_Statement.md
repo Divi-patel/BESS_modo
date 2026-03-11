@@ -4,7 +4,7 @@
 >
 > **Prepared by:** Divy Patel
 > **Date:** March 10, 2026
-> **Classification:** CONFIDENTIAL
+> **Classification:** Modo Energy Take-Home Submission
 > **Context:** Modo Energy Take-Home Assessment
 
 ---
