@@ -7,7 +7,7 @@ export function Footer() {
           &middot; 7,630 pre-computed dispatch scenarios
         </span>
         <span>
-          Modo Energy Open Tech Challenge &middot; Divy Patel &middot; 2025
+          Modo Energy Open Tech Challenge &middot; Divy Patel &middot; 2026
         </span>
       </div>
     </footer>

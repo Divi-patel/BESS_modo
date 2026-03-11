@@ -19,6 +19,7 @@
 - Data pipeline code for GCS bucket access and parquet file handling
 - Visualization code (matplotlib, seaborn) for all charts
 - Sensitivity analysis sweeps (RTE, duration)
+- **Interactive dashboard** — Full Next.js 15 + React 19 + Tailwind v4 dashboard with 6 pages, Plotly.js visualizations, ConfigSidebar with live parameter controls, DashboardProvider context with bilinear interpolation, 7,630 pre-computed scenario matrix, URL param sync, CSV/JSON export, dark/light theming, and Gen 2–5 vision placeholders
 
 ### Debugging (Concrete Examples)
 
@@ -75,14 +76,14 @@ Total: ~50+ Claude Code interactions across 2 sessions. The second session was r
 - **Column names**: AI assumed snake_case; actual EIA data uses title case with parentheses
 - **BA codes**: AI guessed `ERCT`; actual code is `ERCO`
 - **Market framing**: Initial findings were "numbers only"; human pushed for Modo-specific narrative
-- **Scope decisions**: AI would have over-engineered (e.g., adding Streamlit dashboard); human kept focus on analytical depth
+- **Scope decisions**: Initial Gen 1 focused on analytical depth; the interactive dashboard was added after the core analysis was complete to make results explorable with configurable parameters
 
 ## What Was NOT AI-Generated
 
 - **Data infrastructure** — The GCS data pipeline (55k pricing nodes, BESS fleet enrichment, LMP price collection) was built prior to this project
 - **Domain knowledge** — BESS dispatch modeling approach, ERCOT market structure understanding, and Modo metric alignment came from prior research and the problem statement document
 - **Site selection** — Choice of co-location sites and hub vs node comparison strategy was a deliberate analytical decision
-- **Project scope** — The decision to focus on analytical depth over UI/dashboard was a human judgment call
+- **Project scope** — Decision to build the interactive dashboard after core analysis was complete, and UX direction (6-page layout, vision placeholders, sidebar controls) were human judgment calls
 
 ## Approximate AI vs Human Contribution
 
@@ -94,3 +95,4 @@ Total: ~50+ Claude Code interactions across 2 sessions. The second session was r
 | Analysis & findings | 50% | 50% (interpretation, market context) |
 | Methodology doc | 75% | 25% (technical review, market comparisons) |
 | Documentation | 80% | 20% (review, accuracy) |
+| Interactive dashboard | 80% | 20% (review, UX direction, feature priorities) |

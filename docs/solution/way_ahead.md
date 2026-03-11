@@ -16,6 +16,7 @@ Gen 1 answers: *"What is the theoretical maximum energy arbitrage revenue for a 
 - Hub vs node basis impact quantification (+21% avg at West TX nodes)
 - Co-location economics (BESS arbitrage vs solar/wind generation revenue)
 - Key metric: $/kW/yr directly comparable to Modo's BESS Index
+- Interactive Next.js dashboard with 6 analysis pages, configurable BESS parameters, and 7,630 pre-computed dispatch scenarios
 
 **Key numbers:** $76–$136/kW/yr theoretical vs ~$17/kW actual → 18% capture rate
 
@@ -300,7 +301,7 @@ This is what the market needs. Gen 1 provides the foundation — validated dispa
 
 | Gen | Capability | Key Output | Effort |
 |-----|-----------|-----------|--------|
-| **1** (delivered) | Perfect-foresight energy arbitrage | $/kW/yr upper bound, basis impact | 4 hours |
+| **1** (delivered) | Perfect-foresight energy arbitrage + interactive dashboard | $/kW/yr upper bound, basis impact, 6-page explorer | 4 hours |
 | **2** | Hybrid systems | Co-location impact, export constraints | 1-2 weeks |
 | **3** | Stochastic modeling | P50/P90 revenue bands, DSCR | 2-3 weeks |
 | **4** | Degradation | Lifecycle economics, chemistry comparison | 1-2 weeks |

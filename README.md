@@ -17,12 +17,14 @@ flowchart LR
     C --> D["NB 03\nDispatch Optimizer"]
     D --> E["NB 04\nFull Backtest"]
     E --> F["Results\n$/kW/yr, Charts, CSVs"]
+    F --> I["Interactive Dashboard\nNext.js · 6 Pages\n7,630 Scenarios"]
 
     G["EIA-860\nBESS Fleet"] --> B
     H["55k Pricing Nodes\nw/ Coordinates"] --> B
 
     style A fill:#e1f5fe
     style F fill:#e8f5e9
+    style I fill:#e8f5e9
     style E fill:#fff3e0
 ```
 
@@ -127,6 +129,23 @@ RT consistently outperforms DA under perfect foresight (wider real-time spreads)
 
 ---
 
+## Interactive Dashboard
+
+> **[Live Demo →](https://bess-modo.vercel.app)** *(deploy in progress)*
+
+The full analysis is available as an interactive Next.js dashboard with 6 pages, configurable BESS parameters, and 7,630 pre-computed dispatch scenarios:
+
+- **Overview** — KPIs with rankings, revenue heatmaps, monthly distributions
+- **Explorer** — Price duration curves, monthly stats, volatility analysis
+- **Sensitivity** — RTE × Duration revenue surface (interactive heatmap)
+- **Dispatch** — Hour-by-hour optimal charge/discharge profiles
+- **Colocation** — Hub vs node basis analysis for 5 renewable sites
+- **Registry** — US BESS fleet map + searchable table (1,331 units)
+
+Sidebar controls let you adjust location (9 nodes/hubs), market (DA/RT), RTE (78–95%), duration (1–8h), and year (2010–2025). URL params are shareable. Vision placeholders show the Gen 2–5 roadmap.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -144,6 +163,10 @@ To re-run from scratch, you'll need access to the production cloud data pipeline
 ```bash
 # Run tests
 pytest tests/ -v
+
+# Run the interactive dashboard
+cd src/dashboard && npm install && npm run dev
+# → http://localhost:3000
 ```
 
 ---
@@ -180,9 +203,15 @@ BESS_modo/
 │   └── extra/
 │       └── README.md ..................... Research & context (gitignored content)
 ├── src/
-│   └── bess/
-│       ├── __init__.py
-│       └── optimizer.py ................. optimize_dispatch() + backtest_year()
+│   ├── bess/
+│   │   ├── __init__.py
+│   │   └── optimizer.py ................. optimize_dispatch() + backtest_year()
+│   └── dashboard/ ......................... Interactive Next.js dashboard
+│       ├── app/ ........................... 6 page routes (overview, explorer, etc.)
+│       ├── components/ .................... 25+ React components
+│       ├── lib/ ........................... Data loading, scenario matrix, exports
+│       ├── public/data/ ................... Pre-computed JSON (7,630 scenarios)
+│       └── scripts/ ....................... Python data preparation scripts
 ├── tests/
 │   └── test_optimizer.py ................ 5 pytest tests (from NB 03 sanity checks)
 ├── resume/
@@ -202,6 +231,7 @@ BESS_modo/
 | [`docs/problem_statement/`](docs/problem_statement/) | Problem statement (MD + PDF) | Yes |
 | [`docs/solution/`](docs/solution/) | Methodology, roadmap, AI usage | Yes |
 | [`src/bess/`](src/bess/) | Optimizer module (importable from notebooks + tests) | Yes |
+| [`src/dashboard/`](src/dashboard/) | Next.js 15 interactive dashboard (6 pages, 7,630 scenarios) | Yes |
 | [`tests/`](tests/) | 5 pytest tests for dispatch optimizer | Yes |
 | [`resume/`](resume/) | Resume + cover letter | Yes |
 
@@ -295,6 +325,6 @@ flowchart LR
 | [AI Usage](docs/solution/ai_usage.md) | Claude Code workflow, debugging examples, AI vs human contribution |
 | [Planning Workflow](docs/plan/README.md) | Agent planning workflow and conventions |
 
-## Production Infrastructure Note
+## Infrastructure
 
-This submission focuses on **analytical depth and market insight**. Production infrastructure (FastAPI, Vercel, Supabase, automated data pipelines) is demonstrated in other projects — this prioritizes modeling rigor and clear communication of findings relevant to Modo's customers.
+This submission combines **analytical depth** with a **production-grade interactive dashboard**. The Jupyter notebooks provide the analytical foundation; the Next.js dashboard makes the results explorable with configurable parameters across 7,630 pre-computed scenarios. Deployed on Vercel with static JSON data — no backend required.
