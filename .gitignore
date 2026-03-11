@@ -37,3 +37,7 @@ docs/plan/*
 
 # Env files
 .env
+
+# Claude Code
+.claude/
+.mcp.json

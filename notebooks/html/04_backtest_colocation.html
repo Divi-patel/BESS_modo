@@ -7916,50 +7916,11 @@ Sites: 5, Hubs: 4
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">optimize_dispatch</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">power_mw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">energy_mwh</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-                      <span class="n">rte</span><span class="o">=</span><span class="mf">0.87</span><span class="p">,</span> <span class="n">soc_min</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">soc_max</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
-                      <span class="n">soc_init</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">soc_final</span><span class="o">=</span><span class="mf">0.50</span><span class="p">):</span>
-    <span class="n">prices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
-    <span class="n">eta_ch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rte</span><span class="p">)</span>
-    <span class="n">eta_dis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rte</span><span class="p">)</span>
-    <span class="n">soc_min_mwh</span> <span class="o">=</span> <span class="n">soc_min</span> <span class="o">*</span> <span class="n">energy_mwh</span>
-    <span class="n">soc_max_mwh</span> <span class="o">=</span> <span class="n">soc_max</span> <span class="o">*</span> <span class="n">energy_mwh</span>
-    <span class="n">soc_init_mwh</span> <span class="o">=</span> <span class="n">soc_init</span> <span class="o">*</span> <span class="n">energy_mwh</span>
-    <span class="n">soc_final_mwh</span> <span class="o">=</span> <span class="n">soc_final</span> <span class="o">*</span> <span class="n">energy_mwh</span>
-    
-    <span class="n">p_ch</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">p_dis</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">soc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="n">revenue</span> <span class="o">=</span> <span class="n">prices</span> <span class="o">@</span> <span class="p">(</span><span class="n">p_dis</span> <span class="o">-</span> <span class="n">p_ch</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
-    <span class="n">objective</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span>
-    
-    <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">p_ch</span> <span class="o">&lt;=</span> <span class="n">power_mw</span><span class="p">,</span>
-        <span class="n">p_dis</span> <span class="o">&lt;=</span> <span class="n">power_mw</span><span class="p">,</span>
-        <span class="n">soc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">soc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eta_ch</span> <span class="o">*</span> <span class="n">p_ch</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">eta_dis</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_dis</span> <span class="o">*</span> <span class="n">dt</span><span class="p">,</span>
-        <span class="n">soc</span> <span class="o">&gt;=</span> <span class="n">soc_min_mwh</span><span class="p">,</span>
-        <span class="n">soc</span> <span class="o">&lt;=</span> <span class="n">soc_max_mwh</span><span class="p">,</span>
-        <span class="n">soc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">soc_init_mwh</span><span class="p">,</span>
-        <span class="n">soc</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">==</span> <span class="n">soc_final_mwh</span><span class="p">,</span>
-    <span class="p">]</span>
-    
-    <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
-    <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="n">cp</span><span class="o">.</span><span class="n">CLARABEL</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">prob</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'optimal'</span><span class="p">,</span> <span class="s1">'optimal_inaccurate'</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">'revenue'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'p_discharge'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)}</span>
-    
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">'p_charge'</span><span class="p">:</span> <span class="n">p_ch</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="s1">'p_discharge'</span><span class="p">:</span> <span class="n">p_dis</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="s1">'soc'</span><span class="p">:</span> <span class="n">soc</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="s1">'revenue'</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="s1">'status'</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
-    <span class="p">}</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s1">'src'</span><span class="p">))</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bess.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize_dispatch</span><span class="p">,</span> <span class="n">backtest_year</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">'optimize_dispatch() ready'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'optimize_dispatch() and backtest_year() loaded from src/bess/optimizer.py'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7972,7 +7933,7 @@ Sites: 5, Hubs: 4
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>optimize_dispatch() ready
+<pre>optimize_dispatch() and backtest_year() loaded from src/bess/optimizer.py
 </pre>
 </div>
 </div>
@@ -8002,29 +7963,7 @@ Sites: 5, Hubs: 4
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">backtest_year</span><span class="p">(</span><span class="n">prices_series</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="s1">'2024'</span><span class="p">,</span> <span class="o">**</span><span class="n">bess_kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Run optimizer month-by-month for a given year, return monthly results."""</span>
-    <span class="n">year_prices</span> <span class="o">=</span> <span class="n">prices_series</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">year_prices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    
-    <span class="n">monthly_results</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">month_label</span><span class="p">,</span> <span class="n">month_data</span> <span class="ow">in</span> <span class="n">year_prices</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="s1">'ME'</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">month_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">optimize_dispatch</span><span class="p">(</span><span class="n">month_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">bess_kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'revenue'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'status'</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">'optimal'</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">monthly_results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-            <span class="s1">'month'</span><span class="p">:</span> <span class="n">month_label</span><span class="p">,</span>
-            <span class="s1">'revenue_usd'</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">'revenue'</span><span class="p">],</span>
-            <span class="s1">'hours'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">month_data</span><span class="p">),</span>
-            <span class="s1">'cycles'</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">'p_discharge'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">DT</span> <span class="o">/</span> <span class="n">ENERGY_MWH</span><span class="p">,</span>
-            <span class="s1">'avg_spread'</span><span class="p">:</span> <span class="n">month_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">month_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
-        <span class="p">})</span>
-    
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">monthly_results</span><span class="p">)</span>
-
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># backtest_year() imported above from src/bess/optimizer</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'backtest_year() ready'</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -8698,7 +8637,13 @@ Node backtests complete!
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  RTE=80%: $90/kW/yr
-  RTE=85%: $93/kW/yr
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  RTE=85%: $93/kW/yr
 </pre>
 </div>
 </div>
@@ -8706,7 +8651,13 @@ Node backtests complete!
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  RTE=87%: $94/kW/yr
-  RTE=90%: $96/kW/yr
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  RTE=90%: $96/kW/yr
 </pre>
 </div>
 </div>
@@ -8722,7 +8673,13 @@ Node backtests complete!
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  2h (200 MWh): $66/kW/yr
-  4h (400 MWh): $94/kW/yr
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  4h (400 MWh): $94/kW/yr
 </pre>
 </div>
 </div>
@@ -8730,7 +8687,13 @@ Node backtests complete!
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>  6h (600 MWh): $109/kW/yr
-  8h (800 MWh): $117/kW/yr
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  8h (800 MWh): $117/kW/yr
 
 Sensitivity analysis complete.
 </pre>
@@ -8996,11 +8959,23 @@ Duration impact: 1h→4h adds $55/kW/yr, 4h→8h adds $23/kW/yr
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>                Site    Node Std     Hub Std   Node Spread   Neg Hrs
 ----------------------------------------------------------------------
-        Lamesa Solar  $    83.4  $    73.2  $     3,277     1055 ←
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>        Lamesa Solar  $    83.4  $    73.2  $     3,277     1055 ←
          Misae Solar  $    73.0  $    73.2  $     3,081     1855
        Longhorn Wind  $    73.2  $    73.2  $     3,082     2034
        Panther Creek  $    78.9  $    73.2  $     3,085     1237 ←
-        Stanton Wind  $    80.3  $    73.2  $     3,053      748 ←
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>        Stanton Wind  $    80.3  $    73.2  $     3,053      748 ←
 
 Nodes with higher std dev = more extreme spreads = more arbitrage opportunity.
 Lamesa, Stanton, and Panther Creek all have higher volatility than the hub,

@@ -137,7 +137,14 @@ pip install -r requirements.txt
 jupyter lab notebooks/
 ```
 
+**Reviewers:** All notebook outputs are pre-saved — you can view results immediately without re-running. NB 02–04 use only the pre-committed `data/` files and do not require cloud access. Only NB 01 (data download) requires the production cloud data pipeline; reviewers can skip it entirely.
+
 To re-run from scratch, you'll need access to the production cloud data pipeline for price data (see NB 01 for details). As a fallback, ERCOT prices can be obtained via the open-source [gridstatus](https://github.com/kmax12/gridstatus) library.
+
+```bash
+# Run tests
+pytest tests/ -v
+```
 
 ---
 
@@ -172,6 +179,12 @@ BESS_modo/
 │   │   └── README.md ..................... Agent planning workflow
 │   └── extra/
 │       └── README.md ..................... Research & context (gitignored content)
+├── src/
+│   └── bess/
+│       ├── __init__.py
+│       └── optimizer.py ................. optimize_dispatch() + backtest_year()
+├── tests/
+│   └── test_optimizer.py ................ 5 pytest tests (from NB 03 sanity checks)
 ├── resume/
 │   ├── Divy_Patel_Resume_Modo.pdf
 │   └── Divy_Patel_CoverLetter_Modo.pdf
@@ -188,6 +201,8 @@ BESS_modo/
 | `data/extra/` | Schema docs, pricing node coordinates | No — [see README](data/extra/README.md) |
 | [`docs/problem_statement/`](docs/problem_statement/) | Problem statement (MD + PDF) | Yes |
 | [`docs/solution/`](docs/solution/) | Methodology, roadmap, AI usage | Yes |
+| [`src/bess/`](src/bess/) | Optimizer module (importable from notebooks + tests) | Yes |
+| [`tests/`](tests/) | 5 pytest tests for dispatch optimizer | Yes |
 | [`resume/`](resume/) | Resume + cover letter | Yes |
 
 ---
